@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchFilenames } from '../services/api';
+import { fetchFilenames } from '../../services/api';
 
 const FilenameDropdown = ({ onSelect }) => {
     const [filenames, setFilenames] = useState([]);
@@ -19,14 +19,17 @@ const FilenameDropdown = ({ onSelect }) => {
     };
 
     return (
-        <select value={selected} onChange={handleChange}>
-            <option value="">Select Filename</option>
-            {filenames.map((filename, index) => (
-                <option key={index} value={filename}>
-                    {filename}
-                </option>
-            ))}
-        </select>
+        <div>
+            <label htmlFor="filename">Filename: </label>
+            <select id="filename" value={selected} onChange={handleChange}>
+                <option value="">Select Filename</option>
+                {filenames.map((filename, index) => (
+                    <option key={index} value={filename}>
+                        {filename}
+                    </option>
+                ))}
+            </select>
+        </div>
     );
 };
 

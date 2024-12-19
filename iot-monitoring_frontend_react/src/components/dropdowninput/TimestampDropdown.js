@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchTimestamps } from '../services/api';
+import { fetchTimestamps } from '../../services/api';
 
 const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
     const [timestamps, setTimestamps] = useState([]);
@@ -13,12 +13,17 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                 setTimestamps(data);
             };
             loadTimestamps();
+        } else {
+            setTimestamps([]);
+            setStart('');
+            setEnd('');
         }
     }, [filename]);
 
     return (
         <div>
-            <select value={start} onChange={(e) => { setStart(e.target.value); onSelectStart(e.target.value); }}>
+            <label htmlFor="start">Start Time: </label>
+            <select id="start" value={start} onChange={(e) => { setStart(e.target.value); onSelectStart(e.target.value); }}>
                 <option value="">Select Start Timestamp</option>
                 {timestamps.map((timestamp, index) => (
                     <option key={index} value={timestamp}>
@@ -26,7 +31,9 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                     </option>
                 ))}
             </select>
-            <select value={end} onChange={(e) => { setEnd(e.target.value); onSelectEnd(e.target.value); }}>
+
+            <label htmlFor="end">End Time: </label>
+            <select id="end" value={end} onChange={(e) => { setEnd(e.target.value); onSelectEnd(e.target.value); }}>
                 <option value="">Select End Timestamp</option>
                 {timestamps.map((timestamp, index) => (
                     <option key={index} value={timestamp}>
