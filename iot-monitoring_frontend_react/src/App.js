@@ -2,15 +2,38 @@ import React, { useState } from 'react';
 import FilenameDropdown from './components/dropdowninput/FilenameDropdown';
 import TimestampDropdown from './components/dropdowninput/TimestampDropdown';
 import DataDisplay from './components/dropdowninput/DataDisplay';
+import { fetchData } from './services/api';
 
 const App = () => {
     const [filename, setFilename] = useState('');
     const [startTimestamp, setStartTimestamp] = useState('');
     const [endTimestamp, setEndTimestamp] = useState('');
     const [submit, setSubmit] = useState(false);
+    const [data, setData] = useState(null);
+    const [coordinates, setCoordinates] = useState([]);
 
     const handleSubmit = () => {
         setSubmit(true);
+        const fetchAndSetData = async () => {
+            if (filename && startTimestamp && endTimestamp) {
+                const result = await fetchData(filename, startTimestamp, endTimestamp);
+                setData(result);
+                
+                // Format coordinates for the map
+                if (Array.isArray(result)) {
+                    const formattedCoordinates = result.map(item => ({
+                        latitude: parseFloat(item.Latitude),
+                        longitude: parseFloat(item.Longitude),
+                        timestamp: String(item.timestamp),
+                        altitude: parseFloat(item.Altitude),
+                        speed: parseFloat(item.Speed),
+                        heading: parseFloat(item.Heading)
+                    }));
+                    setCoordinates(formattedCoordinates);
+                }
+            }
+        };
+        fetchAndSetData();
     };
 
     const resetSelections = () => {
@@ -59,12 +82,14 @@ const App = () => {
             </div>
 
             {/* Data display */}
-            {submit && (
+            {(
                 <div style={{ marginTop: '20px', width: '100%' }}>
                     <DataDisplay
                         filename={filename}
                         startTimestamp={startTimestamp}
                         endTimestamp={endTimestamp}
+                        data = {data}
+                        coordinates = {coordinates}
                     />
                 </div>
             )}
