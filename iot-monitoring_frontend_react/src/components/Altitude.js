@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import 'chart.js/auto';
 
-const Acceleration = ({ data, onDataHover }) => {
+const Altitude = ({ data, onDataHover }) => {
     const formatTimestamp = (timestamp) => {
         return timestamp.split('.')[1] || timestamp;
     };
@@ -12,26 +12,26 @@ const Acceleration = ({ data, onDataHover }) => {
         labels: data.map(item => formatTimestamp(item.timestamp)),
         datasets: [
             {
-                label: 'AccelerationX',
-                data: data.map(item => parseFloat(item.AccelerationX) || 0),
-                borderColor: '#8884d8',
-                backgroundColor: 'rgba(136, 132, 216, 0.2)',
+                label: 'Heading',
+                data: data.map(item => parseFloat(item.Heading) || 0),
+                borderColor: '#ff7300',
+                backgroundColor: 'rgba(255, 115, 0, 0.2)',
                 borderWidth: 2,
                 tension: 0.4,
             },
             {
-                label: 'AccelerationY',
-                data: data.map(item => parseFloat(item.AccelerationY) || 0),
+                label: 'Roll',
+                data: data.map(item => parseFloat(item.Roll) || 0),
+                borderColor: '#3875ff',
+                backgroundColor: 'rgba(56, 117, 255, 0.2)',
+                borderWidth: 2,
+                tension: 0.4,
+            },
+            {
+                label: 'Pitch',
+                data: data.map(item => parseFloat(item.Pitch) || 0),
                 borderColor: '#82ca9d',
                 backgroundColor: 'rgba(130, 202, 157, 0.2)',
-                borderWidth: 2,
-                tension: 0.4,
-            },
-            {
-                label: 'AccelerationZ',
-                data: data.map(item => parseFloat(item.AccelerationZ) || 0),
-                borderColor: '#ffc658',
-                backgroundColor: 'rgba(255, 198, 88, 0.2)',
                 borderWidth: 2,
                 tension: 0.4,
             },
@@ -55,7 +55,7 @@ const Acceleration = ({ data, onDataHover }) => {
                     },
                     label: function(context) {
                         const value = context.raw.toFixed(3);
-                        return `${context.dataset.label}: ${value} m/s²`;
+                        return `${context.dataset.label}: ${value}°`;
                     },
                 },
                 padding: 10,
@@ -83,7 +83,7 @@ const Acceleration = ({ data, onDataHover }) => {
             y: {
                 title: {
                     display: true,
-                    text: 'Acceleration (m/s²)',
+                    text: 'Altitude (°)',
                 },
             },
         },
@@ -124,4 +124,4 @@ const Acceleration = ({ data, onDataHover }) => {
     );
 };
 
-export default Acceleration;
+export default Altitude;

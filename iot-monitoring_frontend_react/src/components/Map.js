@@ -17,7 +17,7 @@ const MapUpdater = ({ center, coordinates }) => {
     return null;
 };
 
-const Map = ({ coordinates }) => {
+const Map = ({ coordinates, hoveredTimestamp }) => {
     const defaultCenter = [47.448048, 12.394831];
     const center = coordinates.length > 0 
         ? [coordinates[0].latitude, coordinates[0].longitude]
@@ -36,7 +36,6 @@ const Map = ({ coordinates }) => {
         marginTop: '0',
     };
 
-    // ฟังก์ชันเลื่อนแผนที่ไปยังข้อมูลที่โหลดมา
     const recenterMap = (map) => {
         if (coordinates.length > 0) {
             const bounds = coordinates.map(coord => [coord.latitude, coord.longitude]);
@@ -91,27 +90,31 @@ const Map = ({ coordinates }) => {
                     />
                 )}
 
-                {coordinates.length > 0 ? (
-                    coordinates.map((coord, index) => (
+                {coordinates.map((coord, index) => {
+                    const isHovered = coord.timestamp === hoveredTimestamp;
+                    return (
                         <CircleMarker
                             key={index}
                             center={[coord.latitude, coord.longitude]}
-                            radius={5}
-                            color="transparent"
-                            fillColor="transparent"
-                            fillOpacity={0}
+                            radius={1}
+                            color={isHovered ? "red" : "blue"}
+                            fillColor={isHovered ? "red" : "blue"}
+                            fillOpacity={0.2}
+                            weight={1}
                         >
-                            <Tooltip direction="top" offset={[0, -5]} opacity={1}>
-                                <div>
-                                    <p><strong>Timestamp:</strong> {coord.timestamp}</p>
-                                    <p><strong>Altitude:</strong> {coord.altitude} m</p>
-                                    <p><strong>Speed:</strong> {coord.speed} km/h</p>
-                                    <p><strong>Heading:</strong> {coord.heading}°</p>
-                                </div>
-                            </Tooltip>
+                            {isHovered && (
+                                <Tooltip permanent={isHovered} direction="top" offset={[0, -3]} opacity={1}>
+                                    <div>
+                                        <p><strong>Timestamp:</strong> {coord.timestamp}</p>
+                                        <p><strong>Altitude:</strong> {coord.altitude} m</p>
+                                        <p><strong>Speed:</strong> {coord.speed} km/h</p>
+                                        <p><strong>Heading:</strong> {coord.heading}°</p>
+                                    </div>
+                                </Tooltip>
+                            )}
                         </CircleMarker>
-                    ))
-                ) : null}
+                    );
+                })}
             </MapContainer>
         </div>
     );

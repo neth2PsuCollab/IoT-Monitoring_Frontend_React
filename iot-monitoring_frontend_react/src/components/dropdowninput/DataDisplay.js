@@ -1,51 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { fetchData } from '../../services/api';
+import React, { useState } from 'react';
 import Map from '../../components/Map';
+import Acceleration from '../../components/Acceleration.js';
+import Altitude from '../Altitude.js';
 
-const DataDisplay = ({ filename, startTimestamp, endTimestamp ,data , coordinates}) => {
-    
-    // const [data, setData] = useState(null);
-    // const [coordinates, setCoordinates] = useState([]);
-    const [submit, setSubmit] = useState(false);
-
-    // useEffect(() => {
-    //     const fetchAndSetData = async () => {
-    //         if (filename && startTimestamp && endTimestamp) {
-    //             const result = await fetchData(filename, startTimestamp, endTimestamp);
-    //             setData(result);
-                
-    //             // Format coordinates for the map
-    //             if (Array.isArray(result)) {
-    //                 const formattedCoordinates = result.map(item => ({
-    //                     latitude: parseFloat(item.Latitude),
-    //                     longitude: parseFloat(item.Longitude)
-    //                 }));
-    //                 setCoordinates(formattedCoordinates);
-    //             }
-    //         }
-    //     };
-    //     fetchAndSetData();
-    // }, [filename, startTimestamp, endTimestamp]);
+const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates }) => {
+    const [hoveredTimestamp, setHoveredTimestamp] = useState(null);
 
     return (
-        <div 
-        // style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', maxWidth: '800px', margin: '0 auto' }}
-        >
-            {/* <h3>Data</h3> */}
-            {/* {data ? ( */}
-                <div>
-                    {/* <div style={{ marginBottom: '20px' }}>
-                        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                            {JSON.stringify(data, null, 2)}
-                        </pre>
-                    </div> */}
-                    <div>
-                        <Map coordinates={coordinates} />
-                    </div>
-                </div>
-            {/* ) : (
-                <p>Loading...</p>
-            )} */}
+        <div>
+            <div>
+                <Map 
+                    coordinates={coordinates} 
+                    hoveredTimestamp={hoveredTimestamp}
+                />
+            </div>
+            <div style={{ marginTop: '5px' }}>
+                <h3>Acceleration Data</h3>
+                {data ? (
+                    <Acceleration 
+                        data={data} 
+                        onDataHover={setHoveredTimestamp}
+                    />
+                ) : (
+                    <p>Loading Acceleration Data...</p>
+                )}
+            </div>
+            <div style={{ marginTop: '5px' }}>
+                <h3>Altitude Data</h3>
+                {data ? (
+                    <Altitude 
+                        data={data} 
+                        onDataHover={setHoveredTimestamp}
+                    />
+                ) : (
+                    <p>Loading Altitude Data...</p>
+                )}
+            </div>
         </div>
     );
 };
