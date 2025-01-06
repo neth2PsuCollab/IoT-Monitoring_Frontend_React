@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import 'chart.js/auto';
 
-const Acceleration = ({ data, onDataHover }) => {
+const Acceleration = ({ data, tooltipPos, onDataHover }) => {
     const formatTimestamp = (timestamp) => {
         return timestamp.split('.')[1] || timestamp;
     };
@@ -66,6 +66,24 @@ const Acceleration = ({ data, onDataHover }) => {
                 bodyFont: {
                     size: 12
                 },
+                external: function(context) {
+                    if (tooltipPos !== null) {
+                        const dataIndex = data.findIndex(d => d.timestamp === tooltipPos);
+                        if (dataIndex !== -1) {
+                            const chart = context.chart;
+                            const elements = chartData.datasets.map((_, idx) => ({
+                                datasetIndex: idx,
+                                index: dataIndex
+                            }));
+            
+                            chart.tooltip.setActiveElements(elements, {
+                                x: chart.scales.x.getPixelForValue(dataIndex),
+                                y: chart.tooltip.y,
+                            });
+                            chart.update();
+                        }
+                    }
+                }
             },
         },
         scales: {
@@ -95,7 +113,7 @@ const Acceleration = ({ data, onDataHover }) => {
 
     return (
         <div 
-            style={{ width: '1900px', height: '300px', marginTop: '1px' }} 
+            style={{ width: '900px', height: '200px', marginTop: '1px' }} 
             onMouseMove={(e) => {
                 const chart = e.target.closest('canvas');
                 if (!chart) return;
@@ -119,7 +137,13 @@ const Acceleration = ({ data, onDataHover }) => {
             }}
             onMouseLeave={() => onDataHover(null)}
         >
-            <Line data={chartData} options={chartOptions} />
+            <Line 
+                data={chartData} 
+                options={{
+                    ...chartOptions,
+                    maintainAspectRatio: false,
+                }} 
+            />
         </div>
     );
 };

@@ -13,6 +13,10 @@ const App = () => {
     const [coordinates, setCoordinates] = useState([]);
 
     const handleSubmit = () => {
+        if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
+            alert('Error: Start Timestamp must be earlier than End Timestamp.');
+            return;
+        }
         setSubmit(true);
         const fetchAndSetData = async () => {
             if (filename && startTimestamp && endTimestamp) {
@@ -88,8 +92,8 @@ const App = () => {
                         filename={filename}
                         startTimestamp={startTimestamp}
                         endTimestamp={endTimestamp}
-                        data = {data}
-                        coordinates = {coordinates}
+                        data={data}
+                        coordinates={coordinates}
                     />
                 </div>
             )}

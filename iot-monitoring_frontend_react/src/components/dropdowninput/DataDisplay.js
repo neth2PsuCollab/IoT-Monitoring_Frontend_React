@@ -5,6 +5,11 @@ import Altitude from '../Altitude.js';
 
 const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates }) => {
     const [hoveredTimestamp, setHoveredTimestamp] = useState(null);
+    const emptyData = [];
+
+    const handleDataHover = (timestamp) => {
+        setHoveredTimestamp(timestamp);
+    };
 
     return (
         <div>
@@ -16,28 +21,23 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
             </div>
             <div style={{ marginTop: '5px' }}>
                 <h3>Acceleration Data</h3>
-                {data ? (
-                    <Acceleration 
-                        data={data} 
-                        onDataHover={setHoveredTimestamp}
-                    />
-                ) : (
-                    <p>Loading Acceleration Data...</p>
-                )}
+                <Acceleration 
+                    data={data && data.length > 0 ? data : emptyData} 
+                    onDataHover={handleDataHover}  // ส่ง handleDataHover
+                    hoveredTimestamp={hoveredTimestamp}
+                />
             </div>
             <div style={{ marginTop: '5px' }}>
                 <h3>Altitude Data</h3>
-                {data ? (
-                    <Altitude 
-                        data={data} 
-                        onDataHover={setHoveredTimestamp}
-                    />
-                ) : (
-                    <p>Loading Altitude Data...</p>
-                )}
+                <Altitude 
+                    data={data && data.length > 0 ? data : emptyData} 
+                    onDataHover={handleDataHover}  // ส่ง handleDataHover
+                    hoveredTimestamp={hoveredTimestamp}
+                />
             </div>
         </div>
     );
 };
+
 
 export default DataDisplay;

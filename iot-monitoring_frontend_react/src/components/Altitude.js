@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import 'chart.js/auto';
 
-const Altitude = ({ data, onDataHover }) => {
+const Altitude = ({ data, tooltipPos, onDataHover }) => {
     const formatTimestamp = (timestamp) => {
         return timestamp.split('.')[1] || timestamp;
     };
@@ -49,14 +49,35 @@ const Altitude = ({ data, onDataHover }) => {
                 mode: 'index',
                 intersect: false,
                 callbacks: {
-                    title: function(context) {
+                    title: function (context) {
                         const idx = context[0].dataIndex;
                         return data[idx].timestamp;
                     },
-                    label: function(context) {
+                    label: function (context) {
                         const value = context.raw.toFixed(3);
                         return `${context.dataset.label}: ${value}°`;
                     },
+                },
+                external: function(context) {
+                    if (tooltipPos !== null) {
+                        const dataIndex = data.findIndex(d => d.timestamp === tooltipPos);
+                        if (dataIndex !== -1) {
+                            const chart = context.chart;
+                            const elements = chartData.datasets.map((_, idx) => ({
+                                datasetIndex: idx,
+                                index: dataIndex
+                            }));
+                
+                            chart.tooltip.setActiveElements(elements, {
+                                x: chart.scales.x.getPixelForValue(dataIndex),
+                                y: chart.tooltip.y,
+                            });
+                            chart.update();
+                
+                            // อัพเดต tooltipPos เพื่อให้กระทบอีกกราฟ
+                            onDataHover(data[dataIndex].timestamp);
+                        }
+                    }
                 },
                 padding: 10,
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -94,32 +115,38 @@ const Altitude = ({ data, onDataHover }) => {
     };
 
     return (
-        <div 
-            style={{ width: '1900px', height: '300px', marginTop: '1px' }} 
+        <div
+            style={{ width: '900px', height: '200px', marginTop: '1px' }}
             onMouseMove={(e) => {
                 const chart = e.target.closest('canvas');
                 if (!chart) return;
-
+            
                 const chartInstance = ChartJS.getChart(chart);
                 if (!chartInstance) return;
-
+            
                 const elements = chartInstance.getElementsAtEventForMode(
                     e,
                     'index',
                     { intersect: false },
                     false
                 );
-
+            
                 if (elements.length > 0) {
                     const dataIndex = elements[0].index;
-                    onDataHover(data[dataIndex].timestamp);
+                    onDataHover(data[dataIndex].timestamp); // อัพเดต tooltipPos
                 } else {
-                    onDataHover(null);
+                    onDataHover(null); // ไม่มีข้อมูลที่ชี้
                 }
             }}
             onMouseLeave={() => onDataHover(null)}
         >
-            <Line data={chartData} options={chartOptions} />
+            <Line
+                data={chartData}
+                options={{
+                    ...chartOptions,
+                    maintainAspectRatio: false,
+                }}
+            />
         </div>
     );
 };

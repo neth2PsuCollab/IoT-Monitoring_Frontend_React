@@ -97,13 +97,13 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
                             key={index}
                             center={[coord.latitude, coord.longitude]}
                             radius={1}
-                            color={isHovered ? "red" : "blue"}
-                            fillColor={isHovered ? "red" : "blue"}
+                            color={coord.timestamp === hoveredTimestamp ? "red" : "blue"}
+                            fillColor={coord.timestamp === hoveredTimestamp ? "red" : "blue"}
                             fillOpacity={0.2}
                             weight={1}
                         >
-                            {isHovered && (
-                                <Tooltip permanent={isHovered} direction="top" offset={[0, -3]} opacity={1}>
+                            {coord.timestamp === hoveredTimestamp && (
+                                <Tooltip permanent>
                                     <div>
                                         <p><strong>Timestamp:</strong> {coord.timestamp}</p>
                                         <p><strong>Altitude:</strong> {coord.altitude} m</p>
@@ -113,6 +113,7 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
                                 </Tooltip>
                             )}
                         </CircleMarker>
+
                     );
                 })}
             </MapContainer>
