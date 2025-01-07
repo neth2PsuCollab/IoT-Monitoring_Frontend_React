@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import 'chart.js/auto';
 
-const Acceleration = ({ data, tooltipPos, onDataHover }) => {
-    const formatTimestamp = (timestamp) => {
-        return timestamp.split('.')[1] || timestamp;
-    };
+const Acceleration = ({ data, onDataHover, hoveredTimestamp }) => {
+    const formatTimestamp = (timestamp) => timestamp.split('.')[1] || timestamp;
 
     const chartData = {
         labels: data.map(item => formatTimestamp(item.timestamp)),
@@ -15,7 +13,6 @@ const Acceleration = ({ data, tooltipPos, onDataHover }) => {
                 label: 'AccelerationX',
                 data: data.map(item => parseFloat(item.AccelerationX) || 0),
                 borderColor: '#8884d8',
-                backgroundColor: 'rgba(136, 132, 216, 0.2)',
                 borderWidth: 2,
                 tension: 0.4,
             },
@@ -23,7 +20,6 @@ const Acceleration = ({ data, tooltipPos, onDataHover }) => {
                 label: 'AccelerationY',
                 data: data.map(item => parseFloat(item.AccelerationY) || 0),
                 borderColor: '#82ca9d',
-                backgroundColor: 'rgba(130, 202, 157, 0.2)',
                 borderWidth: 2,
                 tension: 0.4,
             },
@@ -31,7 +27,6 @@ const Acceleration = ({ data, tooltipPos, onDataHover }) => {
                 label: 'AccelerationZ',
                 data: data.map(item => parseFloat(item.AccelerationZ) || 0),
                 borderColor: '#ffc658',
-                backgroundColor: 'rgba(255, 198, 88, 0.2)',
                 borderWidth: 2,
                 tension: 0.4,
             },
@@ -41,109 +36,55 @@ const Acceleration = ({ data, tooltipPos, onDataHover }) => {
     const chartOptions = {
         responsive: true,
         plugins: {
-            legend: {
-                position: 'top',
-            },
             tooltip: {
                 enabled: true,
                 mode: 'index',
                 intersect: false,
-                callbacks: {
-                    title: function(context) {
-                        const idx = context[0].dataIndex;
-                        return data[idx].timestamp;
-                    },
-                    label: function(context) {
-                        const value = context.raw.toFixed(3);
-                        return `${context.dataset.label}: ${value} m/s²`;
-                    },
-                },
-                padding: 10,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleFont: {
-                    size: 12
-                },
-                bodyFont: {
-                    size: 12
-                },
                 external: function(context) {
-                    if (tooltipPos !== null) {
-                        const dataIndex = data.findIndex(d => d.timestamp === tooltipPos);
+                    if (hoveredTimestamp) { 
+                        const dataIndex = data.findIndex(d => d.timestamp === hoveredTimestamp);
+                        const chart = context.chart;
+                        console.log("Acc hovered")
                         if (dataIndex !== -1) {
-                            const chart = context.chart;
                             const elements = chartData.datasets.map((_, idx) => ({
                                 datasetIndex: idx,
-                                index: dataIndex
+                                index: dataIndex 
                             }));
-            
-                            chart.tooltip.setActiveElements(elements, {
-                                x: chart.scales.x.getPixelForValue(dataIndex),
-                                y: chart.tooltip.y,
-                            });
-                            chart.update();
+    
+                            if (chart.tooltip._active[0]?.index !== dataIndex) {
+                                console.log("Acc tooltip update")
+                                chart.tooltip.setActiveElements(elements, {
+                                    x: chart.scales.x.getPixelForValue(dataIndex),
+                                    y: chart.scales.y.getPixelForValue(data[dataIndex].AccelerationX),
+                                });
+                                chart.update('none'); // Avoid animation
+                            }
                         }
                     }
-                }
-            },
-        },
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Time',
                 },
-                ticks: {
-                    maxRotation: 0,
-                    autoSkip: true,
-                    maxTicksLimit: 10,
-                },
+
             },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Acceleration (m/s²)',
-                },
-            },
-        },
-        hover: {
-            mode: 'index',
-            intersect: false,
-        },
+        }
     };
 
     return (
-        <div 
-            style={{ width: '900px', height: '200px', marginTop: '1px' }} 
+        <div
+            style={{ width: '900px', height: '200px' }}
             onMouseMove={(e) => {
                 const chart = e.target.closest('canvas');
                 if (!chart) return;
-
                 const chartInstance = ChartJS.getChart(chart);
                 if (!chartInstance) return;
 
-                const elements = chartInstance.getElementsAtEventForMode(
-                    e,
-                    'index',
-                    { intersect: false },
-                    false
-                );
-
+                const elements = chartInstance.getElementsAtEventForMode(e, 'index', { intersect: false }, false);
                 if (elements.length > 0) {
                     const dataIndex = elements[0].index;
                     onDataHover(data[dataIndex].timestamp);
-                } else {
-                    onDataHover(null);
+                    console.log("Acc")
                 }
             }}
-            onMouseLeave={() => onDataHover(null)}
         >
-            <Line 
-                data={chartData} 
-                options={{
-                    ...chartOptions,
-                    maintainAspectRatio: false,
-                }} 
-            />
+            <Line data={chartData} options={{ ...chartOptions, maintainAspectRatio: false }} />
         </div>
     );
 };
