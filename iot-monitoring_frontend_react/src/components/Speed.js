@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
 
-const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
+const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
 
@@ -13,26 +13,13 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
         labels: data.map(item => formatTimestamp(item.timestamp)),
         datasets: [
             {
-                label: 'AccelerationX',
-                data: data.map(item => parseFloat(item.AccelerationX) || 0),
-                borderColor: '#8884d8',
+                label: 'Speed',
+                data: data.map(item => parseFloat(item.Speed) || 0),
+                borderColor: '#ff0000',
                 borderWidth: 2,
                 tension: 0.4,
-            },
-            {
-                label: 'AccelerationY',
-                data: data.map(item => parseFloat(item.AccelerationY) || 0),
-                borderColor: '#82ca9d',
-                borderWidth: 2,
-                tension: 0.4,
-            },
-            {
-                label: 'AccelerationZ',
-                data: data.map(item => parseFloat(item.AccelerationZ) || 0),
-                borderColor: '#ffc658',
-                borderWidth: 2,
-                tension: 0.4,
-            },
+                pointRadius: 0, 
+            }
         ],
     };
 
@@ -48,7 +35,7 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
 
                 chart.tooltip?.setActiveElements(elements, {
                     x: chart.scales.x.getPixelForValue(hoveredIndex),
-                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].AccelerationX)
+                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Heading)
                 });
                 
                 chart.update('none');
@@ -66,8 +53,7 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                 external: function(context) {
                     if (hoveredTimestamp) { 
                         const dataIndex = data.findIndex(d => d.timestamp === hoveredTimestamp);
-                        const chart = context.chart;
-                        
+                        const chart = context.chart;                        
                         if (dataIndex !== -1) {
                             const elements = chartData.datasets.map((_, idx) => ({
                                 datasetIndex: idx,
@@ -77,7 +63,7 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                             if (chart.tooltip._active[0]?.index !== dataIndex) {
                                 chart.tooltip.setActiveElements(elements, {
                                     x: chart.scales.x.getPixelForValue(dataIndex),
-                                    y: chart.scales.y.getPixelForValue(data[dataIndex].AccelerationX),
+                                    y: chart.scales.y.getPixelForValue(data[dataIndex].Heading),
                                 });
                                 chart.update('none');
                             }
@@ -125,4 +111,4 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     );
 };
 
-export default Acceleration;
+export default Altitude;
