@@ -7,7 +7,10 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
 
-    const formatTimestamp = (timestamp) => timestamp.split('.')[1] || timestamp;
+    const formatTimestamp = (timestamp) => {
+        const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
+        return match ? match[1] : timestamp;
+    };
 
     const chartData = {
         labels: data.map(item => formatTimestamp(item.timestamp)),

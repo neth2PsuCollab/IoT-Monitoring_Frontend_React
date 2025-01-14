@@ -3,41 +3,91 @@ import { fetchTimestamps } from '../../services/api';
 
 const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
     const [timestamps, setTimestamps] = useState([]);
+    const [displayTimestamps, setDisplayTimestamps] = useState([]); //เวลาที่เอาแค่นาทีกับวิไปแสดง
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
+    const [dateDisplay, setDateDisplay] = useState(''); //วันที่
 
     useEffect(() => {
         if (filename) {
             const loadTimestamps = async () => {
                 const data = await fetchTimestamps(filename);
-                setTimestamps(data);
+                
+                if (data.length > 0) {
+                    const dateMatch = data[0].match(/^\d{4}-\d{2}-\d{2}/); //ใช้ Regular Expression (^\d{4}-\d{2}-\d{2}) เพื่อตัดเอาวันที่จาก timestamp ตัวแรกและบันทึกใน dateDisplay
+                    if (dateMatch) {
+                        setDateDisplay(dateMatch[0]);
+                    }
+
+                    const timeMap = new Map(); //ใช้ Map เพื่อเก็บเฉพาะ time (รูปแบบ HH:mm:ss) และเก็บค่า timestamp เต็มไว้
+                    data.forEach(timestamp => {
+                        const timeMatch = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
+                        if (timeMatch) {
+                            timeMap.set(timeMatch[1], timestamp);
+                        }
+                    });
+
+                    const uniqueDisplayTimes = [...timeMap.keys()].sort();
+                    setDisplayTimestamps(uniqueDisplayTimes); // สำหรับ dropdown และ timestamps สำหรับการอ้างอิง timestamp เต็ม
+                    setTimestamps([...timeMap.values()]);
+                }
             };
             loadTimestamps();
         } else {
             setTimestamps([]);
+            setDisplayTimestamps([]);
             setStart('');
             setEnd('');
+            setDateDisplay('');
         }
     }, [filename]);
 
+    const formatForSubmission = (displayTime) => {  //แปลงเวลาให้เหมาะสมเพราะต้องเอาไปเรียก API
+        if (!displayTime || !dateDisplay) return '';
+        return `${dateDisplay} ${displayTime}.000000+00:00`;
+    };
+
+    const handleStartChange = (displayTime) => {
+        setStart(displayTime);
+        const formattedTime = formatForSubmission(displayTime);
+        onSelectStart(formattedTime);
+    };
+
+    const handleEndChange = (displayTime) => {
+        setEnd(displayTime);
+        const formattedTime = formatForSubmission(displayTime);
+        onSelectEnd(formattedTime);
+    };
+
     return (
-        <div>
-            <label htmlFor="start">Start Time: </label>
-            <select id="start" value={start} onChange={(e) => { setStart(e.target.value); onSelectStart(e.target.value); }}>
-                <option value="">Select Start Timestamp</option>
-                {timestamps.map((timestamp, index) => (
-                    <option key={index} value={timestamp}>
-                        {timestamp}
+        <div className="inline-flex items-center text-sm">
+            <span className="ml-1 mr-2">วันที่:  {dateDisplay}</span> 
+            <label htmlFor="start" className="mr-1"> Start Time : </label>
+            <select 
+                id="start" 
+                value={start} 
+                onChange={(e) => handleStartChange(e.target.value)}
+                className="mr-2 h-8"
+            >
+                <option value="">Select Start Time</option>
+                {displayTimestamps.map((time) => (
+                    <option key={time} value={time}>
+                        {time}
                     </option>
                 ))}
             </select>
 
-            <label htmlFor="end">End Time: </label>
-            <select id="end" value={end} onChange={(e) => { setEnd(e.target.value); onSelectEnd(e.target.value); }}>
-                <option value="">Select End Timestamp</option>
-                {timestamps.map((timestamp, index) => (
-                    <option key={index} value={timestamp}>
-                        {timestamp}
+            <label htmlFor="end" className="mr-1"> End Time: </label>
+            <select 
+                id="end" 
+                value={end} 
+                onChange={(e) => handleEndChange(e.target.value)}
+                className="h-8"
+            >
+                <option value="">Select End Time</option>
+                {displayTimestamps.map((time) => (
+                    <option key={time} value={time}>
+                        {time}
                     </option>
                 ))}
             </select>

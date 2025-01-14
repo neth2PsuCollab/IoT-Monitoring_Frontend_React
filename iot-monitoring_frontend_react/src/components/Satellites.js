@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
 
-const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
+const Satellites = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
 
@@ -16,12 +16,12 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
         labels: data.map(item => formatTimestamp(item.timestamp)),
         datasets: [
             {
-                label: 'Speed',
-                data: data.map(item => parseFloat(item.Speed) || 0),
+                label: 'Satellites',
+                data: data.map(item => parseFloat(item.Satellites) || 0),
                 borderColor: '#ff0000',
                 borderWidth: 2,
                 tension: 0.4,
-                pointRadius: 0, 
+                pointRadius: 0,
             }
         ],
     };
@@ -38,7 +38,7 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
 
                 chart.tooltip?.setActiveElements(elements, {
                     x: chart.scales.x.getPixelForValue(hoveredIndex),
-                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Heading)
+                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Satellites)
                 });
                 
                 chart.update('none');
@@ -52,27 +52,7 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
             tooltip: {
                 enabled: true,
                 mode: 'index',
-                intersect: false,
-                external: function(context) {
-                    if (hoveredTimestamp) { 
-                        const dataIndex = data.findIndex(d => d.timestamp === hoveredTimestamp);
-                        const chart = context.chart;                        
-                        if (dataIndex !== -1) {
-                            const elements = chartData.datasets.map((_, idx) => ({
-                                datasetIndex: idx,
-                                index: dataIndex 
-                            }));
-    
-                            if (chart.tooltip._active[0]?.index !== dataIndex) {
-                                chart.tooltip.setActiveElements(elements, {
-                                    x: chart.scales.x.getPixelForValue(dataIndex),
-                                    y: chart.scales.y.getPixelForValue(data[dataIndex].Heading),
-                                });
-                                chart.update('none');
-                            }
-                        }
-                    }
-                }
+                intersect: false
             },
         },
         hover: {
@@ -114,4 +94,4 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     );
 };
 
-export default Altitude;
+export default Satellites;

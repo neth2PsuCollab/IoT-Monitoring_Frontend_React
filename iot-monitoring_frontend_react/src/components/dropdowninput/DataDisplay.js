@@ -3,6 +3,8 @@ import Map from '../../components/Map';
 import Acceleration from '../Acceleration';
 import Altitude from '../Altitude';
 import Speed from '../Speed';
+import Satellites from '../Satellites';
+
 import { ChartProvider } from '../../components/ChartContext';
 import { debounce } from 'lodash';
 
@@ -60,6 +62,15 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                 <div style={{ marginTop: '5px' }}>
                     <h3>Speed Graph</h3>
                     <Speed 
+                        data={processedData} 
+                        onDataHover={handleDataHover}
+                        hoveredTimestamp={hoveredTimestamp}
+                    />
+                </div>
+
+                <div style={{ marginTop: '5px' }}>
+                    <h3>Satellites Graph</h3>
+                    <Satellites 
                         data={processedData} 
                         onDataHover={handleDataHover}
                         hoveredTimestamp={hoveredTimestamp}

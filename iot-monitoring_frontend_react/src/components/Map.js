@@ -17,6 +17,11 @@ const MapUpdater = ({ center, coordinates }) => {
     return null;
 };
 
+const formatTimestamp = (timestamp) => {
+    const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
+    return match ? match[1] : timestamp;
+};
+
 const Map = ({ coordinates, hoveredTimestamp }) => {
     const defaultCenter = [47.448048, 12.394831];
     const center = coordinates.length > 0 
@@ -105,7 +110,7 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
                             {coord.timestamp === hoveredTimestamp && (
                                 <Tooltip permanent>
                                     <div>
-                                        <p><strong>Timestamp:</strong> {coord.timestamp}</p>
+                                        <p><strong>Timestamp:</strong> {formatTimestamp(coord.timestamp)}</p>
                                         <p><strong>Altitude:</strong> {coord.altitude} m</p>
                                         <p><strong>Speed:</strong> {coord.speed} km/h</p>
                                         <p><strong>Heading:</strong> {coord.heading}°</p>
