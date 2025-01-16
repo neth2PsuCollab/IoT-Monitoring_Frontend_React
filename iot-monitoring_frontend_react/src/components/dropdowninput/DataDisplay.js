@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Map from '../../components/Map';
 import Acceleration from '../Acceleration';
 import Altitude from '../Altitude';
@@ -34,12 +34,12 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
     return (
         <ChartProvider>
             <div>
-                <div>
+                {/* <div>
                     <Map 
                         coordinates={coordinates || []} 
                         hoveredTimestamp={hoveredTimestamp}
                     />
-                </div>
+                </div> */}
 
                 <div style={{ marginTop: '5px' }}>
                     <h3>Acceleration Graph</h3>

@@ -6,7 +6,7 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
     const [displayTimestamps, setDisplayTimestamps] = useState([]); //เวลาที่เอาแค่นาทีกับวิไปแสดง
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
-    const [dateDisplay, setDateDisplay] = useState(''); //วันที่
+    const [dateDisplay, setDateDisplay] = useState('YYYY-MM-DD'); //ตั้งค่าเริ่มต้น
 
     useEffect(() => {
         if (filename) {
@@ -14,12 +14,12 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                 const data = await fetchTimestamps(filename);
                 
                 if (data.length > 0) {
-                    const dateMatch = data[0].match(/^\d{4}-\d{2}-\d{2}/); //ใช้ Regular Expression (^\d{4}-\d{2}-\d{2}) เพื่อตัดเอาวันที่จาก timestamp ตัวแรกและบันทึกใน dateDisplay
+                    const dateMatch = data[0].match(/^(\d{4}-\d{2}-\d{2})/); 
                     if (dateMatch) {
                         setDateDisplay(dateMatch[0]);
                     }
 
-                    const timeMap = new Map(); //ใช้ Map เพื่อเก็บเฉพาะ time (รูปแบบ HH:mm:ss) และเก็บค่า timestamp เต็มไว้
+                    const timeMap = new Map();
                     data.forEach(timestamp => {
                         const timeMatch = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
                         if (timeMatch) {
@@ -28,7 +28,7 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                     });
 
                     const uniqueDisplayTimes = [...timeMap.keys()].sort();
-                    setDisplayTimestamps(uniqueDisplayTimes); // สำหรับ dropdown และ timestamps สำหรับการอ้างอิง timestamp เต็ม
+                    setDisplayTimestamps(uniqueDisplayTimes);
                     setTimestamps([...timeMap.values()]);
                 }
             };
@@ -38,11 +38,11 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
             setDisplayTimestamps([]);
             setStart('');
             setEnd('');
-            setDateDisplay('');
+            setDateDisplay('YYYY-MM-DD'); //แสดงค่าเริ่มต้น
         }
     }, [filename]);
 
-    const formatForSubmission = (displayTime) => {  //แปลงเวลาให้เหมาะสมเพราะต้องเอาไปเรียก API
+    const formatForSubmission = (displayTime) => {  
         if (!displayTime || !dateDisplay) return '';
         return `${dateDisplay} ${displayTime}.000000+00:00`;
     };
