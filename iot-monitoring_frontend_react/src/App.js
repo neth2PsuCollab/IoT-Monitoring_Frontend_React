@@ -12,6 +12,12 @@ const App = () => {
     const [data, setData] = useState(null);
     const [coordinates, setCoordinates] = useState([]);
 
+    const HeaderSection = () => (
+        <div className="header-section" style={{ position: 'absolute', top: 30, left: 30, padding: '20px' }}>
+            <div className="logo-title">Logo and title</div>
+        </div>
+    );
+
     const handleSubmit = () => {
         if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
             alert('Error: Start Timestamp must be earlier than End Timestamp.');
@@ -22,7 +28,7 @@ const App = () => {
             if (filename && startTimestamp && endTimestamp) {
                 const result = await fetchData(filename, startTimestamp, endTimestamp);
                 setData(result);
-                
+
                 // Format coordinates for the map
                 if (Array.isArray(result)) {
                     const formattedCoordinates = result.map(item => ({
@@ -48,7 +54,8 @@ const App = () => {
     };
 
     return (
-        <div style={{ display: 'flex', ap: '30px', flexDirection: 'column', alignItems: 'flex-end', padding: '20px', backgroundColor: '#f4f4f4', height: '100vh' }}>
+        <div style={{ display: 'flex', gap: '30px', flexDirection: 'column', alignItems: 'flex-end', padding: '20px', backgroundColor: '#f4f4f4', height: '100vh' }}>
+            <HeaderSection />
             {/* Dropdown container */}
             <div style={{ display: 'flex', gap: '10px', backgroundColor: '#fff', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
                 {/* Filename dropdown */}

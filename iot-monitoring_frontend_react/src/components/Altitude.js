@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
 
-const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp ,timestamp}) => {
+const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
     const [timeInterval, setTimeInterval] = useState(10); // Default: 10 seconds
@@ -20,20 +20,20 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp ,timestamp}) 
     };
 
     // Sort data by timestamp
-    const sortedData = [...data].sort((a, b) => {
+    const sortedData = [...data].sort((a, b) => { //เรียงข้อมูล
         return parseTimestamp(a.timestamp) - parseTimestamp(b.timestamp);
     });
 
     // Get the start and end times
-    const startTime = parseTimestamp(sortedData[0].timestamp);
-    const endTime = parseTimestamp(sortedData[sortedData.length - 1].timestamp);
+    // const startTime = parseTimestamp(sortedData[0].timestamp);
+    // const endTime = parseTimestamp(sortedData[sortedData.length - 1].timestamp);
 
     // Function to check if a timestamp should display label based on interval
-    const shouldDisplayLabel = (timestamp, index) => {
+    const shouldDisplayLabel = (timestamp, index) => { //function แสดงค่าแกน x
         if (index === 0 || index === sortedData.length - 1) return true;
 
         const currentTime = parseTimestamp(timestamp);
-        const timeDiffFromStart = Math.floor((currentTime - startTime) / 1000);
+        const timeDiffFromStart = Math.floor((currentTime - timestamp) / 1000);
 
         switch (timeInterval) {
             case 60: // 1 minute
@@ -134,7 +134,7 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp ,timestamp}) 
                 // },
                 ticks: {
                     maxRotation: 0,
-                    autoSkip: false,
+                    // autoSkip: false,
                     callback: (value, index) => {
                         const timestamp = sortedData[index].timestamp;
                         if (shouldDisplayLabel(timestamp, index)) {

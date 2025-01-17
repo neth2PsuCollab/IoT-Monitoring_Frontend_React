@@ -52,63 +52,16 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
             tooltip: {
                 enabled: true,
                 mode: 'index',
-                intersect: false,
-                external: function(context) {
-                    if (hoveredTimestamp) {
-                        const dataIndex = data.findIndex(d => d.timestamp === hoveredTimestamp);
-                        const chart = context.chart;
-                        if (dataIndex !== -1) {
-                            const elements = chartData.datasets.map((_, idx) => ({
-                                datasetIndex: idx,
-                                index: dataIndex
-                            }));
-    
-                            if (chart.tooltip._active[0]?.index !== dataIndex) {
-                                chart.tooltip.setActiveElements(elements, {
-                                    x: chart.scales.x.getPixelForValue(dataIndex),
-                                    y: chart.scales.y.getPixelForValue(data[dataIndex].Heading),
-                                });
-                                chart.update('none');
-                            }
-                        }
-                    }
-                }
+                intersect: false
             },
         },
         hover: {
             mode: 'index',
             intersect: false
         },
-        scales: {
-            x: {
-                ticks: {
-                    // กำหนดให้การแสดงผลของแกน X อยู่ในระยะเวลา 10 วินาที
-                    callback: function(value) {
-                        const formatTimestamp = (timestamp) => {
-                            const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
-                            return match ? match[1] : timestamp;
-                        };
-                        // แปลง timestamp ที่มีรูปแบบ 14:59:59.925001+00:00
-                        const timestamp = value;  // ใช้ value ที่ได้รับจาก ticks
-                        
-                        // แปลง timestamp string ให้เป็น Date object
-                        const date = new Date(timestamp);
-                        
-                        // ปัดวินาทีให้เป็นช่วง 10 วินาที
-                        const seconds = Math.floor(date.getSeconds() / 10) * 10;
-                        date.setSeconds(seconds);
-                        
-                        // แสดงเวลาในรูปแบบ HH:MM:SS
-                        return date.toISOString().slice(11, 19);
-                    }
-                }
-            }
-        },
-        
-        
         onHover: (event, elements) => {
             if (!event?.native) return;
-    
+            
             if (elements && elements.length > 0) {
                 const dataIndex = elements[0].index;
                 setHoveredIndex(dataIndex);
@@ -116,6 +69,77 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
             }
         }
     };
+
+    // const chartOptions = {
+    //     responsive: true,
+    //     plugins: {
+    //         tooltip: {
+    //             enabled: true,
+    //             mode: 'index',
+    //             intersect: false,
+    //             external: function(context) {
+    //                 if (hoveredTimestamp) {
+    //                     const dataIndex = data.findIndex(d => d.timestamp === hoveredTimestamp);
+    //                     const chart = context.chart;
+    //                     if (dataIndex !== -1) {
+    //                         const elements = chartData.datasets.map((_, idx) => ({
+    //                             datasetIndex: idx,
+    //                             index: dataIndex
+    //                         }));
+    
+    //                         if (chart.tooltip._active[0]?.index !== dataIndex) {
+    //                             chart.tooltip.setActiveElements(elements, {
+    //                                 x: chart.scales.x.getPixelForValue(dataIndex),
+    //                                 y: chart.scales.y.getPixelForValue(data[dataIndex].Heading),
+    //                             });
+    //                             chart.update('none');
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         },
+    //     },
+    //     hover: {
+    //         mode: 'index',
+    //         intersect: false
+    //     },
+    //     scales: {
+    //         x: {
+    //             ticks: {
+    //                 // กำหนดให้การแสดงผลของแกน X อยู่ในระยะเวลา 10 วินาที
+    //                 callback: function(value) {
+    //                     const formatTimestamp = (timestamp) => {
+    //                         const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
+    //                         return match ? match[1] : timestamp;
+    //                     };
+    //                     // แปลง timestamp ที่มีรูปแบบ 14:59:59.925001+00:00
+    //                     const timestamp = value;  // ใช้ value ที่ได้รับจาก ticks
+                        
+    //                     // แปลง timestamp string ให้เป็น Date object
+    //                     const date = new Date(timestamp);
+                        
+    //                     // ปัดวินาทีให้เป็นช่วง 10 วินาที
+    //                     const seconds = Math.floor(date.getSeconds() / 10) * 10;
+    //                     date.setSeconds(seconds);
+                        
+    //                     // แสดงเวลาในรูปแบบ HH:MM:SS
+    //                     return date.toISOString().slice(11, 19);
+    //                 }
+    //             }
+    //         }
+    //     },
+        
+        
+    //     onHover: (event, elements) => {
+    //         if (!event?.native) return;
+    
+    //         if (elements && elements.length > 0) {
+    //             const dataIndex = elements[0].index;
+    //             setHoveredIndex(dataIndex);
+    //             setHoveredTimestamp(data[dataIndex].timestamp);
+    //         }
+    //     }
+    // };
     
     
 
