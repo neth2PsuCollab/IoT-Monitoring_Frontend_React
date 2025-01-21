@@ -71,7 +71,7 @@ const Satellites = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     };
 
     return (
-        <div style={{ width: '900px', height: '200px' }}
+        <div //style={{ width: '900px', height: '200px' }}
         onMouseMove={(e) => {
             const chart = e.target.closest('canvas');
             if (!chart) return;

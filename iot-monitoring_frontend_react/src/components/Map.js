@@ -30,16 +30,16 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
 
     const positions = coordinates.map(coord => [coord.latitude, coord.longitude]);
 
-    const mapStyle = {
-        position: 'absolute', 
-        top: '80px', 
-        right: '20px', 
-        width: '690px', 
-        height: '690px', 
-        borderRadius: '8px', 
-        overflow: 'hidden', 
-        marginTop: '0',
-    };
+    // const mapStyle = {
+    //     position: 'absolute', 
+    //     top: '80px', 
+    //     right: '20px', 
+    //     width: '690px', 
+    //     height: '690px', 
+    //     borderRadius: '8px', 
+    //     overflow: 'hidden', 
+    //     marginTop: '0',
+    // };
 
     const recenterMap = (map) => {
         if (coordinates.length > 0) {
@@ -72,7 +72,7 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
     };
 
     return (
-        <div style={mapStyle}>
+        <div className="w-full h-full bg-white rounded-lg shadow-md overflow-auto">
             <MapContainer
                 center={center}
                 zoom={13}

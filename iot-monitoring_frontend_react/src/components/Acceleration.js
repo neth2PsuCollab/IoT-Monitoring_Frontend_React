@@ -166,7 +166,7 @@ const Acceleration = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                 </div>
             </div>
             <div 
-                style={{ width: '900px', height: '200px' }}
+                // style={{ width: '800px', height: '200px' }}
                 onMouseMove={(e) => {
                     const chart = e.target.closest('canvas');
                     if (!chart) return;

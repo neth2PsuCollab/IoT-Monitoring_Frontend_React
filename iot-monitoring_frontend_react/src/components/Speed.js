@@ -38,7 +38,7 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
 
                 chart.tooltip?.setActiveElements(elements, {
                     x: chart.scales.x.getPixelForValue(hoveredIndex),
-                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Heading)
+                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Speed)
                 });
                 
                 chart.update('none');
@@ -144,7 +144,7 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
     
 
     return (
-        <div style={{ width: '900px', height: '200px' }}
+        <div //style={{ width: '900px', height: '200px' }}
         onMouseMove={(e) => {
             const chart = e.target.closest('canvas');
             if (!chart) return;

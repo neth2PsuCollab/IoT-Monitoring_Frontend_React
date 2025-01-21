@@ -3,6 +3,7 @@ import FilenameDropdown from './components/dropdowninput/FilenameDropdown';
 import TimestampDropdown from './components/dropdowninput/TimestampDropdown';
 import DataDisplay from './components/dropdowninput/DataDisplay';
 import { fetchData } from './services/api';
+import HeaderSection from './components/Header';
 
 const App = () => {
     const [filename, setFilename] = useState('');
@@ -11,12 +12,6 @@ const App = () => {
     const [submit, setSubmit] = useState(false);
     const [data, setData] = useState(null);
     const [coordinates, setCoordinates] = useState([]);
-
-    const HeaderSection = () => (
-        <div className="header-section" style={{ position: 'absolute', top: 30, left: 30, padding: '20px' }}>
-            <div className="logo-title">Logo and title</div>
-        </div>
-    );
 
     const handleSubmit = () => {
         if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
@@ -54,58 +49,55 @@ const App = () => {
     };
 
     return (
-        <div style={{ display: 'flex', gap: '30px', flexDirection: 'column', alignItems: 'flex-end', padding: '20px', backgroundColor: '#f4f4f4', height: '100vh' }}>
-            <HeaderSection />
-            {/* Dropdown container */}
-            <div style={{ display: 'flex', gap: '10px', backgroundColor: '#fff', padding: '10px', borderRadius: '5px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
-                {/* Filename dropdown */}
-                <FilenameDropdown
-                    selectedFilename={filename}
-                    onSelect={(selectedFilename) => {
-                        setFilename(selectedFilename);
-                        setSubmit(false); // Reset submit when changing filename
-                    }}
-                />
-
-                {/* Timestamp dropdowns */}
-                <TimestampDropdown
-                    filename={filename}
-                    onSelectStart={setStartTimestamp}
-                    onSelectEnd={setEndTimestamp}
-                />
-
-                {/* Submit button */}
-                <button
-                    onClick={handleSubmit}
-                    disabled={!filename || !startTimestamp || !endTimestamp}
-                    style={{
-                        backgroundColor: '#007BFF',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Submit
-                </button>
-            </div>
-
-            {/* Data display */}
-            {(
-                <div style={{ marginTop: '20px', width: '100%' }}>
-                    <DataDisplay
-                        filename={filename}
-                        startTimestamp={startTimestamp}
-                        endTimestamp={endTimestamp}
-                        data={data}
-                        coordinates={coordinates}
-                    />
+        <div className="flex flex-col h-screen bg-gray-200 p-5 gap-1">
+            {/* Header Section and Input Container */}
+            <div className="flex flex-raw w-full gap-5">
+                {/* Header Section */}
+                <div className="basis-1/3">
+                <HeaderSection />
                 </div>
-            )}
+                {/* Input Container */}
+                <div className="basis-2/3 flex gap-5 bg-white p-3 rounded-lg shadow-md justify-end">
+                    {/* Filename Dropdown */}
+                    <FilenameDropdown
+                        selectedFilename={filename}
+                        onSelect={(selectedFilename) => {
+                            setFilename(selectedFilename);
+                            setSubmit(false);
+                        }}
+                    />
+    
+                    {/* Timestamp Dropdowns */}
+                    <TimestampDropdown
+                        filename={filename}
+                        onSelectStart={setStartTimestamp}
+                        onSelectEnd={setEndTimestamp}
+                    />
+    
+                    {/* Submit Button */}
+                    <button
+                        onClick={handleSubmit}
+                        disabled={!filename || !startTimestamp || !endTimestamp}
+                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                    >
+                        Submit
+                    </button>
+                </div>
+            </div>
+    
+            {/* Data Display Section */}
+            <div className="flex-1 overflow-auto">
+                <DataDisplay
+                    filename={filename}
+                    startTimestamp={startTimestamp}
+                    endTimestamp={endTimestamp}
+                    data={data}
+                    coordinates={coordinates}
+                />
+            </div>
         </div>
     );
+    
 };
 
 export default App;
