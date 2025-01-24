@@ -72,7 +72,7 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                     {/* Top section with stats and map */}
                     <div className="flex flex-row gap-4">
                         {/* Stats boxes */}
-                        <div className="flex flex-col w-full gap-2">
+                        <div className="flex flex-col gap-2">
                             <DistanceTripBox data={processedData} />
                             <SpeedAvgBox data={processedData} />
                             <AltitudeAvgBox data={processedData} />
@@ -81,7 +81,7 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                         
                         {/* Map */}
                         <div className="w-full">
-                            <div className="w-full bg-white rounded-lg shadow-md ">
+                            <div className="w-full h-full bg-white rounded-lg shadow-md ">
                                 <Map 
                                     coordinates={coordinates || []} 
                                     hoveredTimestamp={hoveredTimestamp}

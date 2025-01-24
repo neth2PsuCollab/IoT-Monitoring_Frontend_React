@@ -61,13 +61,13 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
 
     return (
         <div className="inline-flex items-center text-sm">
-            <span className="ml-1 mr-2">วันที่:  {dateDisplay}</span> 
+            <span className="ml-1 mr-2">Date:  {dateDisplay}</span> 
             <label htmlFor="start" className="mr-1"> Start Time : </label>
             <select 
                 id="start" 
                 value={start} 
                 onChange={(e) => handleStartChange(e.target.value)}
-                className="mr-2 h-8"
+                className="border border-gray-300 rounded px-2 py-1"
             >
                 <option value="">Select Start Time</option>
                 {displayTimestamps.map((time) => (
@@ -82,7 +82,7 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                 id="end" 
                 value={end} 
                 onChange={(e) => handleEndChange(e.target.value)}
-                className="h-8"
+                className="border border-gray-300 rounded px-2 py-1"
             >
                 <option value="">Select End Time</option>
                 {displayTimestamps.map((time) => (

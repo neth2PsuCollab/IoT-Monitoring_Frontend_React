@@ -49,6 +49,12 @@ const Satellites = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartOptions = {
         responsive: true,
         plugins: {
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'line', // ใช้สัญลักษณ์แทนกล่องสี่เหลี่ยม
+                },
+            },
             tooltip: {
                 enabled: true,
                 mode: 'index',

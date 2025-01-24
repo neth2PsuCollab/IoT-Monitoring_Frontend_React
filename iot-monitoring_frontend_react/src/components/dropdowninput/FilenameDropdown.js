@@ -19,16 +19,25 @@ const FilenameDropdown = ({ onSelect }) => {
     };
 
     return (
-        <div>
-            <label htmlFor="filename">Filename: </label>
-            <select id="filename" value={selected} onChange={handleChange}>
-                <option value="">Select Filename</option>
-                {filenames.map((filename, index) => (
-                    <option key={index} value={filename}>
-                        {filename}
-                    </option>
-                ))}
-            </select>
+        <div
+            className="flex items-center justify-center" // ใช้ Flexbox เพื่อจัดให้อยู่กลาง
+        >
+            <div className="inline-flex items-center text-sm">
+                <label htmlFor="filename" className="mr-2">Filename:</label>
+                <select
+                    id="filename"
+                    value={selected}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded px-2 py-1"
+                >
+                    <option value="">Select Filename</option>
+                    {filenames.map((filename, index) => (
+                        <option key={index} value={filename}>
+                            {filename}
+                        </option>
+                    ))}
+                </select>
+            </div>
         </div>
     );
 };

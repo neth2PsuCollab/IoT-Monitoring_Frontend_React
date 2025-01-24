@@ -6,6 +6,7 @@ import { useChartContext } from './ChartContext';
 const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
+    const {timeUnit , setTimeUnit } = useState("second");
   
     // Function to format time as HH:MM:SS
     const formatTimestamp = (timestamp) => {
@@ -13,8 +14,13 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
         return match ? match[1] : timestamp;
     };
 
+    const handleTimeSelectChange = (event)  => {
+        setTimeUnit(event.target.value);
+    };
+
+
     const chartData = {
-        labels: data.map(item => formatTimestamp(item.timestamp)),
+        labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
         datasets: [
             {
                 label: 'Heading',
@@ -63,6 +69,12 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     const chartOptions = {
         responsive: true,
         plugins: {
+            legend: {
+                labels: {
+                    usePointStyle: true, // ใช้สัญลักษณ์แทนกล่องสี่เหลี่ยม
+                    pointStyle: 'line',
+                },
+            },
             tooltip: {
                 enabled: true,
                 mode: 'index',
