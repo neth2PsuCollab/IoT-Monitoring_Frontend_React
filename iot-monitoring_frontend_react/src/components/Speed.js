@@ -1,9 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
+import 'chartjs-adapter-date-fns' ;
 
-const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) => {
+
+const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp,timeUnit}) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
 
@@ -12,8 +14,8 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
         return match ? match[1] : timestamp;
     };
 
-    const chartData = {
-        labels: data.map(item => formatTimestamp(item.timestamp)),
+    const chartData = useMemo(() => ({
+        labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
         datasets: [
             {
                 label: 'Speed',
@@ -21,10 +23,10 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
                 borderColor: '#ff0000',
                 borderWidth: 2,
                 tension: 0.4,
-                pointRadius: 0, 
+                pointRadius: 1, 
             }
         ],
-    };
+    }), [data]);
 
     useEffect(() => {
         if (hoveredIndex !== null && chartRef.current) {
@@ -46,35 +48,56 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
         }
     }, [hoveredIndex, data, chartData.datasets]);
 
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'line', // ใช้สัญลักษณ์แทนกล่องสี่เหลี่ยม
+    const chartOptions = useMemo(() => ({
+            responsive: true,
+            animation: {
+                duration: 300, // Reduced animation duration
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false
                 },
             },
-            tooltip: {
-                enabled: true,
+            hover: {
                 mode: 'index',
                 intersect: false
             },
-        },
-        hover: {
-            mode: 'index',
-            intersect: false
-        },
-        onHover: (event, elements) => {
-            if (!event?.native) return;
-            
-            if (elements && elements.length > 0) {
-                const dataIndex = elements[0].index;
-                setHoveredIndex(dataIndex);
-                setHoveredTimestamp(data[dataIndex].timestamp);
+            onHover: (event, elements) => {
+                if (!event?.native) return;
+                
+                if (elements && elements.length > 0) {
+                    const dataIndex = elements[0].index;
+                    setHoveredIndex(dataIndex);
+                    setHoveredTimestamp(data[dataIndex].timestamp);
+                }
+            },
+            scales: {
+                x: {
+                    type: "time",
+                    time: {
+                        unit: timeUnit,
+                        tooltipFormat: "HH:mm:ss"
+                    },
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 10 // Limit number of x-axis ticks
+                    }
+                },
+            },
+            elements: {
+                line: {
+                    borderWidth: 2 // Consistent line width
+                }
             }
-        }
-    };
+        }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp]);
 
     // const chartOptions = {
     //     responsive: true,
@@ -173,4 +196,4 @@ const Speed = ({ data, onDataHover = () => {}, hoveredTimestamp , timestamp}) =>
     );
 };
 
-export default Speed;
+export default React.memo(Speed);

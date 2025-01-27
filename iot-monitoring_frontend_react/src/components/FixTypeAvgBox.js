@@ -6,40 +6,14 @@ const FixTypeAvgBox = ({ data }) => {
     : null;
 
   return (
-    <div style={{
-      width: '192px', // w-48
-      backgroundColor: '#22c55e', // green-500
-      color: 'white',
-      borderRadius: '0.375rem',
-      display: 'flex',          // จัดตรงกลาง
-      flexDirection: 'column',   // จัดเรียงแนวตั้ง
-      justifyContent: 'flex-start', // ตั้งให้ชิ้นส่วนเริ่มจากด้านบน
-      alignItems: 'center',     // จัดตรงกลางแนวนอน
-      height: '150px',          // กำหนดความสูงเพื่อจัดตรงกลางได้พอดี
-      textAlign: 'center'       // จัดข้อความตรงกลาง
-    }}>
-      <div style={{
-                borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-                width: '100%',
-                textAlign: 'center',
-                padding: '8px 0',
-                backgroundColor: 'black', // ปรับพื้นหลังเป็นสีดำ
-                color: 'white'             // ตัวอักษรเป็นสีขาว
-            }}>
-        <div style={{
-          fontSize: '0.875rem',
-          fontWeight: '500'
-        }}>
+    <div className="w-full md:w-48 bg-green-500 text-white rounded-md flex flex-col justify-start items-center h-36 text-center">
+      <div className="border-b border-white/20 w-full text-center py-2 bg-black text-white">
+        <div className="text-sm font-medium">
           Fix (Avg)
         </div>
       </div>
-      <div style={{
-        padding: '30px 0'
-      }}>
-        <div style={{
-          fontSize: '1.875rem',
-          fontWeight: 'bold'
-        }}>
+      <div className="py-8">
+        <div className="text-xl font-bold">
           {averageFixType !== null ? averageFixType : '-'}
         </div>
       </div>

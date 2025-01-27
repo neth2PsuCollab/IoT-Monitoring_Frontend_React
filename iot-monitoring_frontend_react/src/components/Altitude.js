@@ -1,25 +1,19 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS } from 'chart.js/auto';
+import { Chart as ChartJS, scales } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
+import 'chartjs-adapter-date-fns' ;
 
-const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
+const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp, timeUnit }) => {
     const chartRef = useRef(null);
-    const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
-    const {timeUnit , setTimeUnit } = useState("second");
-  
+    const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();  
     // Function to format time as HH:MM:SS
     const formatTimestamp = (timestamp) => {
         const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
         return match ? match[1] : timestamp;
     };
 
-    const handleTimeSelectChange = (event)  => {
-        setTimeUnit(event.target.value);
-    };
-
-
-    const chartData = {
+    const chartData = useMemo(() => ({
         labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
         datasets: [
             {
@@ -28,6 +22,7 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                 borderColor: '#ff7300',
                 borderWidth: 2,
                 tension: 0.4,
+                pointRadius: 0, // Remove point markers to improve performance
             },
             {
                 label: 'Roll',
@@ -35,6 +30,7 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                 borderColor: '#3875ff',
                 borderWidth: 2,
                 tension: 0.4,
+                pointRadius: 0, // Remove point markers to improve performance
             },
             {
                 label: 'Pitch',
@@ -42,9 +38,10 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
                 borderColor: '#82ca9d',
                 borderWidth: 2,
                 tension: 0.4,
+                pointRadius: 0, // Remove point markers to improve performance
             },
         ],
-    };
+    }), [data]);
 
     useEffect(() => {
         if (hoveredIndex !== null && chartRef.current) {
@@ -66,35 +63,56 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
         }
     }, [hoveredIndex, data, chartData.datasets]);
 
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                labels: {
-                    usePointStyle: true, // ใช้สัญลักษณ์แทนกล่องสี่เหลี่ยม
-                    pointStyle: 'line',
+    const chartOptions = useMemo(() => ({
+            responsive: true,
+            animation: {
+                duration: 300, // Reduced animation duration
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'line',
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false
                 },
             },
-            tooltip: {
-                enabled: true,
+            hover: {
                 mode: 'index',
                 intersect: false
             },
-        },
-        hover: {
-            mode: 'index',
-            intersect: false
-        },
-        onHover: (event, elements) => {
-            if (!event?.native) return;
-            
-            if (elements && elements.length > 0) {
-                const dataIndex = elements[0].index;
-                setHoveredIndex(dataIndex);
-                setHoveredTimestamp(data[dataIndex].timestamp);
+            onHover: (event, elements) => {
+                if (!event?.native) return;
+                
+                if (elements && elements.length > 0) {
+                    const dataIndex = elements[0].index;
+                    setHoveredIndex(dataIndex);
+                    setHoveredTimestamp(data[dataIndex].timestamp);
+                }
+            },
+            scales: {
+                x: {
+                    type: "time",
+                    time: {
+                        unit: timeUnit,
+                        tooltipFormat: "HH:mm:ss"
+                    },
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 10 // Limit number of x-axis ticks
+                    }
+                },
+            },
+            elements: {
+                line: {
+                    borderWidth: 2 // Consistent line width
+                }
             }
-        }
-    };
+        }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp]);
 
     return (
         <div //style={{ width: '900px', height: '200px' }}
@@ -120,4 +138,4 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp }) => {
     );
 };
 
-export default Altitude;
+export default React.memo(Altitude);

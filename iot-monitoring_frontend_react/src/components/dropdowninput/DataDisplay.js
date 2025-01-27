@@ -13,6 +13,8 @@ import FixTypeAvgBox from '../FixTypeAvgBox';
 
 const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates }) => {
     const [hoveredTimestamp, setHoveredTimestamp] = useState(null);
+    const [timeUnit , setTimeUnit ] = useState("second");
+    
     
     const handleDataHover = useMemo(
         () => debounce((timestamp) => {
@@ -30,19 +32,31 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
         return data;
     }, [data]);
     
+    const handleTimeScaleChange = (event)  => {
+        setTimeUnit(event.target.value);
+    };
+
     return (
         <ChartProvider>
             {/* Main container with flex row */}
-            <div className="flex flex-row w-full gap-4 p-4">
+            <div className="flex flex-col-reverse w-full md:flex-row w-full gap-4 p-4">
                 {/* Left column for graphs */}
-                <div className="flex flex-col w-2/4 gap-4 justify-start">
+                <div className="flex flex-col w-full md:w-1/2 gap-4">
                     {/* Acceleration Graph */}
                     <div className="flex-1 min-h-0 bg-white rounded-lg shadow-md p-4">
                         <h3 className="text-lg font-medium mb-2">Acceleration Graph</h3>
+                        <div>
+                            <label htmlFor= "timeScale"> Time Scale: </label>
+                                <select id="timeScale" value={timeUnit} onChange={handleTimeScaleChange}>
+                                <option value="second"> Second</option>
+                                <option value="minute"> Minute</option>
+                            </select>
+                        </div>
                         <Acceleration 
                             data={processedData} 
                             onDataHover={handleDataHover}
                             hoveredTimestamp={hoveredTimestamp}
+                            timeUnit={timeUnit}
                         />
                     </div>
 
@@ -53,6 +67,7 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                             data={processedData} 
                             onDataHover={handleDataHover}
                             hoveredTimestamp={hoveredTimestamp}
+                            timeUnit={timeUnit}
                         />
                     </div>
 
@@ -63,16 +78,17 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                             data={processedData} 
                             onDataHover={handleDataHover}
                             hoveredTimestamp={hoveredTimestamp}
+                            timeUnit={timeUnit}
                         />
                     </div>
                 </div>
 
                 {/* Right column */}
-                <div className="flex flex-col w-1/2 gap-4">
+                <div className="flex flex-col w-full md:w-1/2 gap-4">
                     {/* Top section with stats and map */}
-                    <div className="flex flex-row gap-4">
+                    <div className="flex flex-col md:flex-row w-full gap-4">
                         {/* Stats boxes */}
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col  gap-2">
                             <DistanceTripBox data={processedData} />
                             <SpeedAvgBox data={processedData} />
                             <AltitudeAvgBox data={processedData} />
@@ -80,14 +96,13 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                         </div>
                         
                         {/* Map */}
-                        <div className="w-full">
-                            <div className="w-full h-full bg-white rounded-lg shadow-md ">
+                            {/* <div className="w-full h-full bg-white rounded-lg shadow-md "> */}
+                            <div className="w-full h-[600px] md:h-full bg-white rounded-lg shadow-md">
                                 <Map 
                                     coordinates={coordinates || []} 
                                     hoveredTimestamp={hoveredTimestamp}
                                 />
                             </div>
-                        </div>
                     </div>
 
                     {/* Satellites Graph at bottom */}
@@ -97,6 +112,7 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                             data={processedData} 
                             onDataHover={handleDataHover}
                             hoveredTimestamp={hoveredTimestamp}
+                            timeUnit={timeUnit}
                         />
                     </div>
                 </div>

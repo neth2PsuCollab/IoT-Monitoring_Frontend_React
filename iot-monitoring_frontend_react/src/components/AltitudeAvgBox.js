@@ -5,46 +5,20 @@ const AltitudeAvgBox = ({ data }) => {
         ? (data.reduce((sum, item) => sum + parseFloat(item.Altitude || 0), 0) / data.length).toFixed(1)
         : null;
 
-        return (
-            <div style={{
-                width: '192px',            // เปลี่ยนให้เหมือน FixTypeAvgBox
-                backgroundColor: '#F378F5',
-                color: 'white',
-                borderRadius: '0.375rem',
-                display: 'flex',
-                flexDirection: 'column',   // จัดเรียงแนวตั้ง
-                justifyContent: 'flex-start', // ตั้งให้ชิ้นส่วนเริ่มจากด้านบน
-                alignItems: 'center',
-                height: '150px',
-                textAlign: 'center'
-            }}>
-                <div style={{
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
-                    width: '100%',
-                    textAlign: 'center',
-                    padding: '8px 0',
-                    backgroundColor: 'black', // ปรับพื้นหลังเป็นสีดำ
-                    color: 'white'             // ตัวอักษรเป็นสีขาว
-                }}>
-                    <div style={{
-                        fontSize: '0.875rem',
-                        fontWeight: '500'
-                    }}>
-                        Altitude trip (Avg)
-                    </div>
-                </div>
-                <div style={{
-                    padding: '30px 0'
-                }}>
-                    <div style={{
-                        fontSize: '1.575rem',
-                        fontWeight: 'bold'
-                    }}>
-                        {averageAltitude !== null ? averageAltitude : '-'} m
-                    </div>
+    return (
+        <div className="w-full md:w-48 bg-pink-500 text-white rounded-md flex flex-col justify-start items-center h-36 text-center">
+            <div className="border-b border-white/20 w-full text-center py-2 bg-black text-white">
+                <div className="text-sm font-medium">
+                    Altitude trip (Avg)
                 </div>
             </div>
-        );
-    };
+            <div className="py-8">
+                <div className="text-lg font-bold">
+                    {averageAltitude !== null ? averageAltitude : '-'} m
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default AltitudeAvgBox;
