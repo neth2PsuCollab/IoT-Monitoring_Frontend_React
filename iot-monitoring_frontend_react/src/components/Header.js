@@ -1,10 +1,10 @@
 import React from "react";
 
 const HeaderSection = () => (
-    <header className="w-full h-full bg-blue-600 text-white py-4 shadow-md">
+    <header className="w-full h-full bg-blue-600 text-white py-4 shadow-md mx-0 md:mx-4  rounded-lg">
         <div className="container mx-auto flex items-center justify-between">
             {/* Logo Section */}
-            <div className="flex items-center">
+            <div className="flex items-center mx-4">
                 <div className="bg-white text-blue-600 font-bold text-xl rounded-full w-10 h-10 flex items-center justify-center">
                     
                 </div>

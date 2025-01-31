@@ -11,7 +11,7 @@ import SpeedAvgBox from '../SpeedAvgBox';
 import AltitudeAvgBox from '../AltitudeAvgBox';
 import FixTypeAvgBox from '../FixTypeAvgBox';
 
-const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates }) => {
+const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates, isLoading }) => {
     const [hoveredTimestamp, setHoveredTimestamp] = useState(null);
     const [timeUnit , setTimeUnit ] = useState("second");
     
@@ -101,6 +101,7 @@ const DataDisplay = ({ filename, startTimestamp, endTimestamp, data, coordinates
                                 <Map 
                                     coordinates={coordinates || []} 
                                     hoveredTimestamp={hoveredTimestamp}
+                                    isLoading={isLoading}
                                 />
                             </div>
                     </div>

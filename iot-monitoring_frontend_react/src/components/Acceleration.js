@@ -76,11 +76,16 @@ const Acceleration = ({ data, onDataHover = () => {}, timeUnit }) => {
                 type: "time",
                 time: {
                     unit: timeUnit,
-                    tooltipFormat: "HH:mm:ss"
+                    displayFormats: {
+                        second: 'HH:mm:ss',
+                        minute: 'HH:mm',
+                        hour: 'HH:mm'
+                    },
+                    tooltipFormat: 'HH:mm:ss'
                 },
                 ticks: {
                     autoSkip: true,
-                    maxTicksLimit: 10 // Limit number of x-axis ticks
+                    maxTicksLimit: 10
                 }
             },
         },

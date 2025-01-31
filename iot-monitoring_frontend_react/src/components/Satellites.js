@@ -20,7 +20,7 @@ const Satellites = ({ data, onDataHover = () => {}, hoveredTimestamp ,timeUnit})
             {
                 label: 'Satellites',
                 data: data.map(item => parseFloat(item.Satellites) || 0),
-                borderColor: '#ff0000',
+                borderColor: '#ff7300',
                 borderWidth: 2,
                 tension: 0.4,
                 pointRadius: 0, // Remove point markers to improve performance
@@ -84,11 +84,16 @@ const Satellites = ({ data, onDataHover = () => {}, hoveredTimestamp ,timeUnit})
                     type: "time",
                     time: {
                         unit: timeUnit,
-                        tooltipFormat: "HH:mm:ss"
+                        displayFormats: {
+                            second: 'HH:mm:ss',
+                            minute: 'HH:mm',
+                            hour: 'HH:mm'
+                        },
+                        tooltipFormat: 'HH:mm:ss'
                     },
                     ticks: {
                         autoSkip: true,
-                        maxTicksLimit: 10 // Limit number of x-axis ticks
+                        maxTicksLimit: 10
                     }
                 },
             },

@@ -13,35 +13,43 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp, timeUnit }) 
         return match ? match[1] : timestamp;
     };
 
-    const chartData = useMemo(() => ({
-        labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
-        datasets: [
-            {
-                label: 'Heading',
-                data: data.map(item => parseFloat(item.Heading) || 0),
-                borderColor: '#ff7300',
-                borderWidth: 2,
-                tension: 0.4,
-                pointRadius: 0, // Remove point markers to improve performance
-            },
-            {
-                label: 'Roll',
-                data: data.map(item => parseFloat(item.Roll) || 0),
-                borderColor: '#3875ff',
-                borderWidth: 2,
-                tension: 0.4,
-                pointRadius: 0, // Remove point markers to improve performance
-            },
-            {
-                label: 'Pitch',
-                data: data.map(item => parseFloat(item.Pitch) || 0),
-                borderColor: '#82ca9d',
-                borderWidth: 2,
-                tension: 0.4,
-                pointRadius: 0, // Remove point markers to improve performance
-            },
-        ],
-    }), [data]);
+    const chartData = useMemo(() => {
+        // console.log("Raw data:", data); // ตรวจสอบข้อมูลที่เข้ามา
+        return {
+            labels: data.map(item => {
+                const timestamp = new Date(item.timestamp).toISOString().split(".")[0];
+                // console.log("Formatted timestamp:", timestamp); // ตรวจสอบค่าที่ถูกแปลงแล้ว
+                return timestamp;
+            }),
+            datasets: [
+                {
+                    label: 'Heading',
+                    data: data.map(item => parseFloat(item.Heading) || 0),
+                    borderColor: '#ff7300',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'Roll',
+                    data: data.map(item => parseFloat(item.Roll) || 0),
+                    borderColor: '#3875ff',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'Pitch',
+                    data: data.map(item => parseFloat(item.Pitch) || 0),
+                    borderColor: '#82ca9d',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                },
+            ],
+        };
+    }, [data]);
+    
 
     useEffect(() => {
         if (hoveredIndex !== null && chartRef.current) {
@@ -99,11 +107,16 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp, timeUnit }) 
                     type: "time",
                     time: {
                         unit: timeUnit,
-                        tooltipFormat: "HH:mm:ss"
+                        displayFormats: {
+                            second: 'HH:mm:ss',
+                            minute: 'HH:mm',
+                            hour: 'HH:mm'
+                        },
+                        tooltipFormat: 'HH:mm:ss'
                     },
                     ticks: {
                         autoSkip: true,
-                        maxTicksLimit: 10 // Limit number of x-axis ticks
+                        maxTicksLimit: 10
                     }
                 },
             },

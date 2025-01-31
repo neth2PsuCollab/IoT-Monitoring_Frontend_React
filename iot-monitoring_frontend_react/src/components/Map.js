@@ -22,7 +22,7 @@ const formatTimestamp = (timestamp) => {
     return match ? match[1] : timestamp;
 };
 
-const Map = ({ coordinates, hoveredTimestamp }) => {
+const Map = ({ coordinates, hoveredTimestamp, isLoading }) => {
     const defaultCenter = [47.448048, 12.394831];
     const center = coordinates.length > 0 
         ? [coordinates[0].latitude, coordinates[0].longitude]
@@ -72,28 +72,32 @@ const Map = ({ coordinates, hoveredTimestamp }) => {
     };
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-md overflow-auto">
-            <MapContainer
-                center={center}
-                zoom={13}
-                style={{ height: '100%', width: '100%' }}
-                scrollWheelZoom={true}
-            >
-                <CustomRecenterButton />
-                <MapUpdater center={center} coordinates={coordinates} />
+        <div className="w-full h-full bg-white rounded-lg shadow-md overflow-auto relative">
+            {/* Loading Overlay สำหรับ Map */}
+            {isLoading && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 z-[1002]"></div>
+            )}
+                <MapContainer
+                    center={center}
+                    zoom={13}
+                    style={{ height: '100%', width: '100%' }}
+                    scrollWheelZoom={true}
+                >
+                    <CustomRecenterButton />
+                    <MapUpdater center={center} coordinates={coordinates} />
 
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-
-                {positions.length > 0 && (
-                    <Polyline 
-                        positions={positions} 
-                        color="blue" 
-                        weight={5} 
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                )}
+
+                    {positions.length > 0 && (
+                        <Polyline 
+                            positions={positions} 
+                            color="blue" 
+                            weight={5} 
+                        />
+                    )}
 
                 {coordinates.map((coord, index) => {
                     const isHovered = coord.timestamp === hoveredTimestamp;
