@@ -4,6 +4,7 @@ import TimestampDropdown from './components/dropdowninput/TimestampDropdown';
 import DataDisplay from './components/dropdowninput/DataDisplay';
 import { fetchData } from './services/api';
 import HeaderSection from './components/Header';
+import ThemeToggle from './components/ThemeToggle';
 
 const App = () => {
     const [filename, setFilename] = useState('');
@@ -12,7 +13,7 @@ const App = () => {
     const [submit, setSubmit] = useState(false);
     const [data, setData] = useState(null);
     const [coordinates, setCoordinates] = useState([]);
-    const [isLoading, setIsLoading] = useState(false); // ✅ เพิ่ม state สำหรับ loading
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async () => {
         if (startTimestamp && endTimestamp && startTimestamp > endTimestamp) {
@@ -55,13 +56,13 @@ const App = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gray-200 p-5 gap-1 relative">
-            {/* ✅ Loading Overlay */}
+        <div className="flex flex-col h-screen bg-gray-200 dark:bg-gray-900 p-5 gap-1 relative">
+            {/* Loading Overlay */}
             {isLoading && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white p-5 rounded-lg shadow-lg flex flex-col items-center">
+                <div className="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex justify-center items-center z-50">
+                    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg flex flex-col items-center">
                         <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-                        <p className="mt-3 text-gray-700 font-bold">Loading Data...</p>
+                        <p className="mt-3 text-gray-700 dark:text-gray-300 font-bold">Loading Data...</p>
                     </div>
                 </div>
             )}
@@ -69,13 +70,13 @@ const App = () => {
             {/* Header Section and Input Container */}
             <div className="flex flex-col md:flex-row md:gap-5">
                 {/* Header Section */}
-                <div className="flex-1 md:basis-2/5 w-full">
+                <div className="flex-1 md:basis-2/5 w-full flex justify-between items-center">
                     <HeaderSection />
+                    <ThemeToggle />
                 </div>
 
                 {/* Input Container */}
-                <div className="md:basis-3/5 w-full flex flex-col md:flex-row gap-2 bg-white p-3 rounded-lg shadow-md md:justify-end">
-                    {/* Filename Dropdown */}
+                <div className="md:basis-3/5 w-full flex flex-col md:flex-row gap-2 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md md:justify-end">
                     <FilenameDropdown
                         selectedFilename={filename}
                         onSelect={(selectedFilename) => {
@@ -84,18 +85,16 @@ const App = () => {
                         }}
                     />
 
-                    {/* Timestamp Dropdowns */}
                     <TimestampDropdown
                         filename={filename}
                         onSelectStart={setStartTimestamp}
                         onSelectEnd={setEndTimestamp}
                     />
 
-                    {/* Submit Button */}
                     <button
                         onClick={handleSubmit}
                         disabled={!filename || !startTimestamp || !endTimestamp}
-                        className="bg-blue-500 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition-colors"
                     >
                         Submit
                     </button>

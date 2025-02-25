@@ -7,11 +7,23 @@ import 'chartjs-adapter-date-fns' ;
 const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp, timeUnit }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();  
-    // Function to format time as HH:MM:SS
-    const formatTimestamp = (timestamp) => {
-        const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
-        return match ? match[1] : timestamp;
-    };
+    const [isDarkMode, setIsDarkMode] = useState(false);
+        
+            useEffect(() => {
+                const checkTheme = () => {
+                    setIsDarkMode(document.documentElement.classList.contains('dark'));
+                };
+        
+                checkTheme();
+        
+                const observer = new MutationObserver(checkTheme);
+                observer.observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+        
+                return () => observer.disconnect();
+            }, []);
 
     const chartData = useMemo(() => {
         // console.log("Raw data:", data); // ตรวจสอบข้อมูลที่เข้ามา
@@ -72,60 +84,66 @@ const Altitude = ({ data, onDataHover = () => {}, hoveredTimestamp, timeUnit }) 
     }, [hoveredIndex, data, chartData.datasets]);
 
     const chartOptions = useMemo(() => ({
-            responsive: true,
-            animation: {
-                duration: 300, // Reduced animation duration
-            },
-            plugins: {
-                legend: {
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: 'line',
+                responsive: true,
+                animation: { duration: 300 },
+                plugins: {
+                    legend: {
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'line',
+                            color: isDarkMode ? '#fff' : '#000'
+                        },
+                    },
+                    tooltip: {
+                        enabled: true,
+                        mode: 'index',
+                        intersect: false
                     },
                 },
-                tooltip: {
-                    enabled: true,
+                hover: {
                     mode: 'index',
                     intersect: false
                 },
-            },
-            hover: {
-                mode: 'index',
-                intersect: false
-            },
-            onHover: (event, elements) => {
-                if (!event?.native) return;
-                
-                if (elements && elements.length > 0) {
-                    const dataIndex = elements[0].index;
-                    setHoveredIndex(dataIndex);
-                    setHoveredTimestamp(data[dataIndex].timestamp);
-                }
-            },
-            scales: {
-                x: {
-                    type: "time",
-                    time: {
-                        unit: timeUnit,
-                        displayFormats: {
-                            second: 'HH:mm:ss',
-                            minute: 'HH:mm',
-                            hour: 'HH:mm'
-                        },
-                        tooltipFormat: 'HH:mm:ss'
-                    },
-                    ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 10
+                onHover: (event, elements) => {
+                    if (!event?.native) return;
+                    
+                    if (elements && elements.length > 0) {
+                        const dataIndex = elements[0].index;
+                        setHoveredIndex(dataIndex);
+                        setHoveredTimestamp(data[dataIndex].timestamp);
                     }
                 },
-            },
-            elements: {
-                line: {
-                    borderWidth: 2 // Consistent line width
-                }
-            }
-        }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp]);
+                scales: {
+                    x: {
+                        type: "time",
+                        time: {
+                            unit: timeUnit,
+                            displayFormats: {
+                                second: 'HH:mm:ss',
+                                minute: 'HH:mm',
+                                hour: 'HH:mm'
+                            },
+                            tooltipFormat: 'HH:mm:ss'
+                        },
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 10,
+                            color: isDarkMode ? '#fff' : '#000'
+                        },
+                        grid: {
+                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: isDarkMode ? '#fff' : '#000'
+                        },
+                        grid: {
+                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                },
+            }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp, isDarkMode]);
 
     return (
         <div //style={{ width: '900px', height: '200px' }}

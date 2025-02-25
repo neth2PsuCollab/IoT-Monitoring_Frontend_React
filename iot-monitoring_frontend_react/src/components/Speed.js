@@ -1,18 +1,29 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto';
 import { useChartContext } from './ChartContext';
-import 'chartjs-adapter-date-fns' ;
+import 'chartjs-adapter-date-fns';
 
-
-const Speed = ({ data, onDataHover = () => {} ,timeUnit}) => {
+const Speed = ({ data, onDataHover = () => {}, timeUnit }) => {
     const chartRef = useRef(null);
     const { hoveredIndex, setHoveredIndex, setHoveredTimestamp } = useChartContext();
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const formatTimestamp = (timestamp) => {
-        const match = timestamp.match(/(\d{2}:\d{2}:\d{2})/);
-        return match ? match[1] : timestamp;
-    };
+    useEffect(() => {
+        const checkTheme = () => {
+            setIsDarkMode(document.documentElement.classList.contains('dark'));
+        };
+
+        checkTheme();
+
+        const observer = new MutationObserver(checkTheme);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     const chartData = useMemo(() => ({
         labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
@@ -50,14 +61,13 @@ const Speed = ({ data, onDataHover = () => {} ,timeUnit}) => {
 
     const chartOptions = useMemo(() => ({
                 responsive: true,
-                animation: {
-                    duration: 300, // Reduced animation duration
-                },
+                animation: { duration: 300 },
                 plugins: {
                     legend: {
                         labels: {
                             usePointStyle: true,
                             pointStyle: 'line',
+                            color: isDarkMode ? '#fff' : '#000'
                         },
                     },
                     tooltip: {
@@ -93,32 +103,58 @@ const Speed = ({ data, onDataHover = () => {} ,timeUnit}) => {
                         },
                         ticks: {
                             autoSkip: true,
-                            maxTicksLimit: 10
+                            maxTicksLimit: 10,
+                            color: isDarkMode ? '#fff' : '#000'
+                        },
+                        grid: {
+                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                         }
                     },
-                },
-                elements: {
-                    line: {
-                        borderWidth: 2 // Consistent line width
+                    y: {
+                        ticks: {
+                            color: isDarkMode ? '#fff' : '#000'
+                        },
+                        grid: {
+                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                        }
                     }
-                }
-            }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp]);
+                },
+            }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp, isDarkMode]);
     
+        useEffect(() => {
+            if (hoveredIndex !== null && chartRef.current) {
+                const chart = chartRef.current;
+                
+                if (chart && hoveredIndex >= 0 && hoveredIndex < data.length) {
+                    const elements = chartData.datasets.map((_, datasetIndex) => ({
+                        datasetIndex,
+                        index: hoveredIndex
+                    }));
+    
+                    chart.tooltip?.setActiveElements(elements, {
+                        x: chart.scales.x.getPixelForValue(hoveredIndex),
+                        y: chart.scales.y.getPixelForValue(data[hoveredIndex].Speed)
+                    });
+                    
+                    chart.update('none');
+                }
+            }
+        }, [hoveredIndex, data, chartData.datasets]);
 
     return (
-        <div //style={{ width: '900px', height: '200px' }}
-        onMouseMove={(e) => {
-            const chart = e.target.closest('canvas');
-            if (!chart) return;
-            const chartInstance = ChartJS.getChart(chart);
-            if (!chartInstance) return;
+        <div
+            onMouseMove={(e) => {
+                const chart = e.target.closest('canvas');
+                if (!chart) return;
+                const chartInstance = ChartJS.getChart(chart);
+                if (!chartInstance) return;
 
-            const elements = chartInstance.getElementsAtEventForMode(e, 'index', { intersect: false }, false);
-            if (elements.length > 0) {
-                const dataIndex = elements[0].index;
-                onDataHover(data[dataIndex].timestamp);
-            }
-        }}
+                const elements = chartInstance.getElementsAtEventForMode(e, 'index', { intersect: false }, false);
+                if (elements.length > 0) {
+                    const dataIndex = elements[0].index;
+                    onDataHover(data[dataIndex].timestamp);
+                }
+            }}
         >
             <Line 
                 ref={chartRef}

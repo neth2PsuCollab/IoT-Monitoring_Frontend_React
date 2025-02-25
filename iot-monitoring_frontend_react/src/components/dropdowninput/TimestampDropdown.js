@@ -61,14 +61,20 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
 
     return (
         <div className="flex flex-col md:flex-row items-center text-sm gap-1">
-            <span className="ml-1 mr-2">Date: {dateDisplay}</span> 
-
-        <label htmlFor="start" className="mr-1">Start Time:</label>
+        <span className="ml-1 mr-2 text-gray-700 dark:text-gray-200">
+            Date: {dateDisplay}
+        </span> 
+        <label 
+            htmlFor="start" 
+            className="mr-1 text-gray-700 dark:text-gray-200"
+        >
+            Start Time:
+        </label>
         <select 
             id="start" 
             value={start} 
             onChange={(e) => handleStartChange(e.target.value)}
-            className="border border-gray-300 rounded px-2 py-1"
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1"
         >
             <option value="">Select Start Time</option>
             {displayTimestamps.map((time) => (
@@ -77,13 +83,17 @@ const TimestampDropdown = ({ filename, onSelectStart, onSelectEnd }) => {
                 </option>
             ))}
         </select>
-
-        <label htmlFor="end" className="mr-1">End Time:</label>
+        <label 
+            htmlFor="start" 
+            className="mr-1 text-gray-700 dark:text-gray-200"
+        >
+            End Time:
+        </label>
         <select 
             id="end" 
             value={end} 
             onChange={(e) => handleEndChange(e.target.value)}
-            className="border border-gray-300 rounded px-2 py-1"
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded px-2 py-1"
         >
             <option value="">Select End Time</option>
             {displayTimestamps.map((time) => (
