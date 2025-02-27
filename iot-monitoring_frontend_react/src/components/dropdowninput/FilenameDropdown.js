@@ -20,7 +20,7 @@ const FilenameDropdown = ({ onSelect }) => {
 
     return (
         <div
-            className="flex items-center justify-center" // ใช้ Flexbox เพื่อจัดให้อยู่กลาง
+            className="flex items-center justify-center md:ml-4" // ใช้ Flexbox เพื่อจัดให้อยู่กลาง
         >
             <div className="inline-flex items-center text-sm">
             <label 

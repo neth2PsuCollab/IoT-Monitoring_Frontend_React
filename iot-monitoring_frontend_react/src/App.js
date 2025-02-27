@@ -70,13 +70,13 @@ const App = () => {
             {/* Header Section and Input Container */}
             <div className="flex flex-col md:flex-row md:gap-5">
                 {/* Header Section */}
-                <div className="flex-1 md:basis-2/5 w-full flex justify-between items-center">
+                <div className="flex-1 md:basis-2/4 w-full flex justify-between items-center">
                     <HeaderSection />
-                    <ThemeToggle />
+                    {/* <ThemeToggle /> */}
                 </div>
 
                 {/* Input Container */}
-                <div className="md:basis-3/5 w-full flex flex-col md:flex-row gap-2 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md md:justify-end">
+                <div className="md:basis-2/4 w-full flex flex-col md:flex-row gap-1 bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md md:justify-start">
                     <FilenameDropdown
                         selectedFilename={filename}
                         onSelect={(selectedFilename) => {
@@ -94,7 +94,7 @@ const App = () => {
                     <button
                         onClick={handleSubmit}
                         disabled={!filename || !startTimestamp || !endTimestamp}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition-colors"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50 transition-colors md:ml-2"
                     >
                         Submit
                     </button>
