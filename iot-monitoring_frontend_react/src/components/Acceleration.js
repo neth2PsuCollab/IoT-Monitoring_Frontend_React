@@ -30,7 +30,7 @@ const Acceleration = ({ data, onDataHover = () => {}, timeUnit }) => {
         labels: data.map(item => new Date(item.timestamp).toISOString().split(".")[0]),
         datasets: [
             {
-                label: 'Heading',
+                label: 'Acceleration X',
                 data: data.map(item => parseFloat(item.AccelerationX) || 0),
                 borderColor: '#8884d8',
                 borderWidth: 2,
@@ -38,7 +38,7 @@ const Acceleration = ({ data, onDataHover = () => {}, timeUnit }) => {
                 pointRadius: 0, // Remove point markers to improve performance
             },
             {
-                label: 'Roll',
+                label: 'Acceleration Y',
                 data: data.map(item => parseFloat(item.AccelerationY) || 0),
                 borderColor: '#82ca9d',
                 borderWidth: 2,
@@ -46,7 +46,7 @@ const Acceleration = ({ data, onDataHover = () => {}, timeUnit }) => {
                 pointRadius: 0,
             },
             {
-                label: 'Pitch',
+                label: 'Acceleration Z',
                 data: data.map(item => parseFloat(item.AccelerationZ) || 0),
                 borderColor: '#ffc658',
                 borderWidth: 2,
