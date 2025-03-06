@@ -2,7 +2,7 @@ import React from 'react';
 
 const SpeedAvgBox = ({ data }) => {
   const averageSpeed = data.length > 0 
-    ? (data.reduce((sum, item) => sum + parseFloat(item.Speed || 0), 0) / data.length).toFixed(2)
+    ? (data.reduce((sum, item) => sum + (parseFloat(item.Speed || 0) * 3.6), 0) / data.length).toFixed(2) // แปลง m/s เป็น km/h
     : null;
 
   return (

@@ -30,7 +30,7 @@ const Speed = ({ data, onDataHover = () => {}, timeUnit }) => {
         datasets: [
             {
                 label: 'Speed',
-                data: data.map(item => parseFloat(item.Speed) || 0),
+                data: data.map(item => (parseFloat(item.Speed) || 0) * 3.6), // แปลง m/s เป็น km/h
                 borderColor: '#ff0000',
                 borderWidth: 2,
                 tension: 0.4,
@@ -60,86 +60,91 @@ const Speed = ({ data, onDataHover = () => {}, timeUnit }) => {
     }, [hoveredIndex, data, chartData.datasets]);
 
     const chartOptions = useMemo(() => ({
-                responsive: true,
-                animation: { duration: 300 },
-                plugins: {
-                    legend: {
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: 'line',
-                            color: isDarkMode ? '#fff' : '#000'
-                        },
-                    },
-                    tooltip: {
-                        enabled: true,
-                        mode: 'index',
-                        intersect: false
-                    },
+        responsive: true,
+        animation: { duration: 300 },
+        plugins: {
+            legend: {
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'line',
+                    color: isDarkMode ? '#fff' : '#000'
                 },
-                hover: {
-                    mode: 'index',
-                    intersect: false
-                },
-                onHover: (event, elements) => {
-                    if (!event?.native) return;
-                    
-                    if (elements && elements.length > 0) {
-                        const dataIndex = elements[0].index;
-                        setHoveredIndex(dataIndex);
-                        setHoveredTimestamp(data[dataIndex].timestamp);
+            },
+            tooltip: {
+                enabled: true,
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return `Speed: ${tooltipItem.raw.toFixed(2)} Km/h`;
                     }
-                },
-                scales: {
-                    x: {
-                        type: "time",
-                        time: {
-                            unit: timeUnit,
-                            displayFormats: {
-                                second: 'HH:mm:ss',
-                                minute: 'HH:mm',
-                                hour: 'HH:mm'
-                            },
-                            tooltipFormat: 'HH:mm:ss'
-                        },
-                        ticks: {
-                            autoSkip: true,
-                            maxTicksLimit: 10,
-                            color: isDarkMode ? '#fff' : '#000'
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
+                }                             
+            },
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
+        onHover: (event, elements) => {
+            if (!event?.native) return;
+            
+            if (elements && elements.length > 0) {
+                const dataIndex = elements[0].index;
+                setHoveredIndex(dataIndex);
+                setHoveredTimestamp(data[dataIndex].timestamp);
+            }
+        },
+        scales: {
+            x: {
+                type: "time",
+                time: {
+                    unit: timeUnit,
+                    displayFormats: {
+                        second: 'HH:mm:ss',
+                        minute: 'HH:mm',
+                        hour: 'HH:mm'
                     },
-                    y: {
-                        ticks: {
-                            color: isDarkMode ? '#fff' : '#000'
-                        },
-                        grid: {
-                            color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
+                    tooltipFormat: 'HH:mm:ss'
                 },
-            }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp, isDarkMode]);
-    
-        useEffect(() => {
-            if (hoveredIndex !== null && chartRef.current) {
-                const chart = chartRef.current;
-                
-                if (chart && hoveredIndex >= 0 && hoveredIndex < data.length) {
-                    const elements = chartData.datasets.map((_, datasetIndex) => ({
-                        datasetIndex,
-                        index: hoveredIndex
-                    }));
-    
-                    chart.tooltip?.setActiveElements(elements, {
-                        x: chart.scales.x.getPixelForValue(hoveredIndex),
-                        y: chart.scales.y.getPixelForValue(data[hoveredIndex].Speed)
-                    });
-                    
-                    chart.update('none');
+                ticks: {
+                    autoSkip: true,
+                    maxTicksLimit: 10,
+                    color: isDarkMode ? '#fff' : '#000'
+                },
+                grid: {
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            y: {
+                ticks: {
+                    color: isDarkMode ? '#fff' : '#000'
+                },
+                grid: {
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
                 }
             }
-        }, [hoveredIndex, data, chartData.datasets]);
+        },
+    }), [data, timeUnit, setHoveredIndex, setHoveredTimestamp, isDarkMode]);
+    
+    useEffect(() => {
+        if (hoveredIndex !== null && chartRef.current) {
+            const chart = chartRef.current;
+            
+            if (chart && hoveredIndex >= 0 && hoveredIndex < data.length) {
+                const elements = chartData.datasets.map((_, datasetIndex) => ({
+                    datasetIndex,
+                    index: hoveredIndex
+                }));
+
+                chart.tooltip?.setActiveElements(elements, {
+                    x: chart.scales.x.getPixelForValue(hoveredIndex),
+                    y: chart.scales.y.getPixelForValue(data[hoveredIndex].Speed)
+                });
+                
+                chart.update('none');
+            }
+        }
+    }, [hoveredIndex, data, chartData.datasets]);
 
     return (
         <div
