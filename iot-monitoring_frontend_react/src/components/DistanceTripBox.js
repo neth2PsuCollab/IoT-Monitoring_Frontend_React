@@ -10,8 +10,10 @@ const DistanceTripBox = ({ data }) => {
     // คำนวณระยะทางรวม
     const totalDistance = lastDistance - firstDistance;  // หน่วยเป็นเมตร
 
-    // คำนวณค่าเฉลี่ย
-    const averageDistanceTrip = (totalDistance / 1000).toFixed(1); // แปลงจากเมตรเป็นกิโลเมตร
+    // ถ้าระยะทางรวมไม่เกิน 500 เมตร แสดงเป็นเมตร, ถ้าเกิน 500 เมตร แสดงเป็นกิโลเมตร
+    const formattedDistance = totalDistance <= 500 
+        ? `${totalDistance} m` 
+        : `${(totalDistance / 1000).toFixed(1)} Km`;  // แปลงจากเมตรเป็นกิโลเมตร
 
     return (
         <div className="w-full md:w-48 bg-blue-500 text-white rounded-md flex flex-col justify-start items-center h-36 text-center">
@@ -22,7 +24,7 @@ const DistanceTripBox = ({ data }) => {
             </div>
             <div className="py-8">
                 <div className="text-lg font-bold">
-                    {averageDistanceTrip} Km
+                    {formattedDistance}
                 </div>
             </div>
         </div>
